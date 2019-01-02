@@ -1,0 +1,153 @@
+<script src="p5.js"></script>
+<script src="js/app.js"> </script>
+<link rel="stylesheet" href="bootstrap.min.css">
+<script src="jquery.min.js"></script>
+
+
+<script>
+    var isLoadedGame = false;
+    
+    function setup() {
+        var cnv = createCanvas(400, 400);
+        console.log(cnv);
+    }
+    function draw() {
+        if(isLoadedGame)
+        {
+            background(51)   
+            translate(20, 20);
+
+            if(App.Config.ComputerPlayer.getScore() > App.Config.humanPlayer.getScore())
+            {
+                $("#angry").addClass("collapse");
+                $("#happy").removeClass("collapse");
+            }else
+            {
+                $("#happy").addClass("collapse");
+                $("#angry").removeClass("collapse");
+            }
+            if( App.Main.game.PlayerRole() == App.Config.ComputerPlayer )
+            {
+                $("#computerRole").removeClass("collapse")
+                $("#humanRole").addClass("collapse");
+            }else
+            {
+                $("#computerRole").addClass("collapse")
+                $("#humanRole").removeClass("collapse");
+            }
+            
+            for (var i = 0; i < App.Config.numRow; i++) {
+                for (var j = 0; j < App.Config.numCol; j++) {
+                    
+                    App.Config.grid[i][j].draw();
+                }
+            }
+            App.Game.drawLastLine();
+        }
+    }
+
+    function mousePressed() {
+        // Check if mouse is inside the circle
+        for (var i = 0; i < App.Config.numRow; i++) {
+            for (var j = 0; j < App.Config.numCol; j++) {
+                if (mouseX < 20 + App.Config.grid[i][j].x * App.Config.offsetX + App.Config.radius
+                    && mouseX > 20 + App.Config.grid[i][j].x * App.Config.offsetX - App.Config.radius &&
+                    mouseY < 20 + App.Config.grid[i][j].y * App.Config.offsetY + App.Config.radius
+                    && mouseY > 20 + App.Config.grid[i][j].y * App.Config.offsetY - App.Config.radius
+                ) {
+                    App.Config.currentCell = App.Config.grid[i][j];
+
+                }
+            }
+        }
+    }
+
+    function keyPressed() {
+        App.Config.humanPlayer.playMoveByArrow(key);
+    }
+
+
+
+</script>
+<html>
+    
+    <div>
+        
+            <div class="alert alert-success">
+                    <strong>ComputerScore :</strong> <span id='computerScore' class="badge"></span> <img id='angry' width="50px" height="50px" class="img-circle" src="images.jpg">
+                    <img id='happy' width="50px" height="50px" class="img-circle" src="tongue-out-emoticon-vector-315692.jpg">
+                    <strong>HumanPlayer :</strong> <span id='humanScore' class="badge"></span> 
+                    <img id='happy' width="50px" height="50px" class="img-circle" src="male-user-shadow_318-34042.jpg">
+                    <strong>RoleOfPlayer :</strong> <span class='badge  'id='role'>
+                           <img id='computerRole'  width="50px;" height="50px;" src="computer.png" class="collapse">
+                            <img id='humanRole' width="50px;" height="50px;" src="male-user-shadow_318-34042.jpg" class="collapse">
+                    </span> 
+            </div> 
+            <div class="row" id='config'>
+             
+                <div class="row"> 
+                        <div class="col-lg-3">
+                                <button class="btn btn-success form-control" id='start'>start</button>
+                        </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-default form-control" id='easy'>easy</button>
+                    </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-warning form-control" id='hard'>hard</button>
+                    </div>
+                </div>
+                <div class="row" style="    margin-top: 10px;">
+                        <div class="col-lg-3">
+                                <button class="btn btn-default form-control" id='normalSize'>normalSize <span class="badge">3*3</span></button>
+                        </div>
+                        <div class="col-lg-3">
+                                <button class="btn btn-info form-control" id='mediumSize'>mediumSize <span class="badge">4*4</span></button>
+                        </div>
+
+                        <div class="col-lg-3">
+                                <button class="btn btn-primary form-control" id='bigSize'>big size <span class="badge">5*5</span></button>
+                        </div>
+                </div>
+            </div>
+             
+    </div>
+</html>
+<script>
+    $(document).ready(function()
+    {
+        $(document).ready(function()
+        {
+            $("#easy").click(function()
+            {
+                App.Config.maxDepth = 1;
+            })
+            $("#hard").click(function()
+            {
+                App.Config.maxDepth = 1;
+                App.Config.level = "hard";
+            });
+            $("#normalSize").click(function()
+            {
+                App.Config.numCol = 3;
+                App.Config.numRow = 3;
+            });
+            $("#mediumSize").click(function()
+            {
+                App.Config.numCol = 4;
+                App.Config.numRow = 4;
+            });
+            $("#bigSize").click(function()
+            {
+                App.Config.numCol = 5;
+                App.Config.numRow = 5;
+            });
+            $("#start").click(function()
+            {
+                isLoadedGame = true;
+                App.Main.setUp();
+                $("#config").addClass("collapse");
+            }) ;
+           
+        });
+    })
+</script>
